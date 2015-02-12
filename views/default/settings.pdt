@@ -1,0 +1,21 @@
+
+	<ul>
+		<li>
+			<?php
+			$this->Form->label($this->_("Alipay.email", true), "alipay_email");
+			$this->Form->fieldText("email", $this->Html->ifSet($meta['email']), array('id'=>"alipay_email"));
+			?>
+		</li>
+		<li>
+			<?php
+			$this->Form->label($this->_("Alipay.pid", true), "alipay_pid");
+			$this->Form->fieldText("pid", $this->Html->ifSet($meta['pid']), array('id'=>"alipay_pid"));
+			?>
+		</li>
+		<li>
+			<?php
+			$this->Form->label($this->_("Alipay.key", true), "alipay_pid");
+			$this->Form->fieldText("key", $this->Html->ifSet($meta['key']), array('id'=>"alipay_key"));
+			?>
+		</li>
+	</ul>

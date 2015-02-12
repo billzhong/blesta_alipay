@@ -1,0 +1,21 @@
+
+	<?php
+	// Disable CSRF for this form
+	$this->Form->setCsrfOptions(array('set_on_create' => false));
+	$this->Form->create($post_to);
+	if ($this->Html->ifSet($fields)) {
+		foreach ($fields as $key => $value) {
+			$this->Form->fieldHidden($key, $value);
+		}
+	}
+	
+	//$this->Form->fieldSubmit("", "",
+	//	array('style'=>'background-image: url('.$this->view_dir."images/alipay.png".'); width:96px; height:37px; border:none; background-color:transparent;')
+	//);
+
+	$this->Form->fieldButton("", '<i class="fa fa-jpy"></i> ' . $this->_("Alipay.buildprocess.submit", true),
+		array('type'=>'submit', 'value'=>'', 'class'=>'btn btn-primary')
+	);
+
+	$this->Form->end();
+	?>
