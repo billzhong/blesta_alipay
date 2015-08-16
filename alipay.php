@@ -110,7 +110,7 @@ class Alipay extends NonmerchantGateway {
 			'email' => array(
 				'valid' => array(
 					'rule' => array("isEmail", false),
-					'message' => Language::_("PaypalPaymentsStandard.!error.account_id.valid", true)
+					'message' => Language::_("Alipay.!error.account_id.valid", true)
 				)
 			),
 			'pid' => array(
