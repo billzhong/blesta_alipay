@@ -201,24 +201,26 @@ class Alipay extends NonmerchantGateway {
 		Loader::loadHelpers($this, array("Form", "Html"));
 
 		$fields = array(
-			"service" => "trade_create_by_buyer",
+//			"service" => "trade_create_by_buyer", //双接口，注释下行
+			"service" => "create_direct_pay_by_user",
 			"partner" => $this->ifSet($this->meta['pid']),
 			"_input_charset" => "utf-8",
 			'notify_url' => Configure::get("Blesta.gw_callback_url") . Configure::get("Blesta.company_id") . "/alipay/?client_id=".$this->ifSet($contact_info['client_id']),
 			"return_url" => $this->ifSet($options['return_url']),
 			"out_trade_no" => $this->ifSet($contact_info['client_id']) . "-" . time(),
-			"subject" => str_replace(' ', '' ,$this->ifSet($options['description']) ),
+			"subject" => str_replace(' ', '', $this->ifSet($options['description']) ),
 			"payment_type" => "1",
-			"logistics_type" => "EXPRESS",
-			"logistics_fee" => "0.00",
-			"logistics_payment" => "SELLER_PAY",
+//			"logistics_type" => "EXPRESS",//双接口
+//			"logistics_fee" => "0.00",//双接口
+//			"logistics_payment" => "SELLER_PAY",//双接口
 			"seller_email" => $this->ifSet($this->meta['email']),
-			"price" => round($amount, 2),
-			"quantity" => "1",
-			"receive_name" => "--",
-			"receive_address" => "--",
-			"receive_zip" => "0",
-			"receive_phone" => "000000",
+//			"price" => round($amount, 2), //双接口，注释下行
+			"total_fee" => round($amount, 2),
+//			"quantity" => "1",//双接口
+//			"receive_name" => "--",//双接口
+//			"receive_address" => "--",//双接口
+//			"receive_zip" => "0",//双接口
+//			"receive_phone" => "000000",//双接口
 		);
 
 		if (isset($invoice_amounts) && is_array($invoice_amounts))
@@ -262,9 +264,9 @@ class Alipay extends NonmerchantGateway {
 			$this->log('CALLBACK: '.$this->ifSet($_SERVER['REQUEST_URI']), serialize($backup), "input", true);
 			echo 'success';
 
-			if ($this->ifSet($post['trade_status']) == 'WAIT_SELLER_SEND_GOODS') {
-				$this->sendGoods($this->ifSet($post['trade_no']));
-			}
+//			if ($this->ifSet($post['trade_status']) == 'WAIT_SELLER_SEND_GOODS') {
+//				$this->sendGoods($this->ifSet($post['trade_no']));
+//			}
 
 			if ($this->ifSet($post['trade_status']) == 'TRADE_FINISHED') {
 				if ($this->checkTransID($this->ifSet($post['trade_no']), $client_id)) {
@@ -320,12 +322,12 @@ class Alipay extends NonmerchantGateway {
 
 			$this->log('RETURN: '.$this->ifSet($_SERVER['REQUEST_URI']), serialize($backup), "input", true);
 
-			if ($this->ifSet($get['trade_status']) == 'WAIT_SELLER_SEND_GOODS') {
-				$this->sendGoods($this->ifSet($get['trade_no']));
-			}
+//			if ($this->ifSet($get['trade_status']) == 'WAIT_SELLER_SEND_GOODS') {
+//				$this->sendGoods($this->ifSet($get['trade_no']));
+//			}
 
 			if ($this->ifSet($get['trade_status']) == 'TRADE_FINISHED') {
-				if (!$this->checkTransID($this->ifSet($post['trade_no']), $client_id)) {
+				if (!$this->checkTransID($this->ifSet($get['trade_no']), $client_id)) {
 					return array(
 						'client_id' => $client_id,
 						'amount' => $this->ifSet($get['price']),
@@ -534,24 +536,24 @@ class Alipay extends NonmerchantGateway {
 	 *
 	 * @param string An unique alipay id
 	 */
-	private function sendGoods($tid) {
-		$http = $this->Net->create("Http");
-		$http->setTimeout(5);
-		$fields = array(
-			"service" => "send_goods_confirm_by_platform",
-			"partner" => $this->ifSet($this->meta['pid']),
-			"_input_charset" => "utf-8",
-			"trade_no" => $tid,
-			"logistics_name" => "Blesta",
-			"transport_type" => "EXPRESS",
-		);
-		$result = $http->post($this->alipay_api, $this->sign($fields));
-		if (strpos($result, '<is_success>T</is_success>') !== false) {
-			$this->log('send_goods_confirm_by_platform', $result, "output", true);
-		} else {
-			$this->log('send_goods_confirm_by_platform', $result, "output", false);
-		}
-	}
+//	private function sendGoods($tid) {
+//		$http = $this->Net->create("Http");
+//		$http->setTimeout(5);
+//		$fields = array(
+//			"service" => "send_goods_confirm_by_platform",
+//			"partner" => $this->ifSet($this->meta['pid']),
+//			"_input_charset" => "utf-8",
+//			"trade_no" => $tid,
+//			"logistics_name" => "Blesta",
+//			"transport_type" => "EXPRESS",
+//		);
+//		$result = $http->post($this->alipay_api, $this->sign($fields));
+//		if (strpos($result, '<is_success>T</is_success>') !== false) {
+//			$this->log('send_goods_confirm_by_platform', $result, "output", true);
+//		} else {
+//			$this->log('send_goods_confirm_by_platform', $result, "output", false);
+//		}
+//	}
 
 }
 ?>
